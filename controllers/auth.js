@@ -3,6 +3,7 @@ const User = require("../models/User")
 require('dotenv').config();
 const CryptoJs = require("crypto-js")
 const jwt = require("jsonwebtoken");
+const { verifyTokenAndAdmin } = require("../middleware/verifyToken");
 
 router.post("/users", async (req, res) => {
     const newUser = new User({
@@ -28,12 +29,13 @@ router.post("/users", async (req, res) => {
     }
 })
 
+
+
 //login
 router.post("/auth", async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email })
         !user && res.status(401).json("wrong email")
-
 
         const hashedPassword = CryptoJs.AES.decrypt(
             user.password,
@@ -46,7 +48,9 @@ router.post("/auth", async (req, res) => {
             res.status(401).json(Original_password)
 
         const accessToken = jwt.sign({
-            id: user._id
+            id: user._id,
+            role: user.role
+
         }, process.env.JWT_SEC,
             { expiresIn: "3d" })
 
@@ -63,7 +67,9 @@ router.post("/auth", async (req, res) => {
     catch (err) {
         res.status(500).json(err)
     }
+
 })
+
 
 
 module.exports = router;
