@@ -4,7 +4,7 @@ const User = require("../models/User");
 
 
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.token;
 
     if (authHeader) {
@@ -12,6 +12,7 @@ const verifyToken = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SEC, async (err, user) => {
             if (err) res.status(403).json("token is not valid")
             req.user = user;
+
 
             next();
         })
