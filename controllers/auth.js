@@ -14,7 +14,6 @@ router.post("/users", async (req, res) => {
         email: req.body.email,
         contactnum: req.body.contactnum,
 
-
     })
 
     try {
